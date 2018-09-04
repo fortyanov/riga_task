@@ -1,4 +1,5 @@
 from main.models import UsefulNumber, UsefulText
+from django.db.models import Sum
 
 
 class NumberHandler:
@@ -7,9 +8,8 @@ class NumberHandler:
 
     def run(self):
         UsefulNumber.objects.create(number=self.number)
-        all_useful_numbers = UsefulNumber.objects.all()
         average_number = \
-            sum([entity.number for entity in all_useful_numbers]) / all_useful_numbers.count()
+            UsefulNumber.objects.aggregate(Sum('number'))['number__sum'] / UsefulNumber.objects.count()
         return {'Average number': average_number}
 
 
